@@ -1,0 +1,65 @@
+{
+    "availableBuildingAreas": [
+        { "coordX": 5, "coordY": 8 },
+        { "coordX": 20, "coordY": 10 },
+        { "coordX": 8, "coordY": 14 },
+        { "coordX": 15, "coordY": 6 }
+    ],
+    "builtBuildings": [
+        {
+            "coordX": 10,
+            "coordY": 10,
+            "level": 1,
+            "maxLevel": 3,
+            "name": "Church",
+            "imagePath": "assets/house-lvl-1.png",
+            "goldsForUpdate": 200,
+            "ironsForUpdate": 200,
+            "stonesForUpdate": 200,
+            "woodsForUpdate": 200
+        }
+    ],
+    "unbuiltBuildings": [
+        { 
+            "name": "Lumber Yard",
+            "goldsForBuild": 100,
+            "ironsForBuild": 20,
+            "stonesForBuild": 20,
+            "woodsForBuild": 20
+        },
+        {
+            "name": "Mine",
+            "goldsForBuild": 100,
+            "ironsForBuild": 20,
+            "stonesForBuild": 20,
+            "woodsForBuild": 20
+        },
+        {
+            "name": "Practice Range",
+            "goldsForBuild": 100,
+            "ironsForBuild": 20,
+            "stonesForBuild": 20,
+            "woodsForBuild": 20 
+        },
+        {
+            "name": "Factory",
+            "goldsForBuild": 100,
+            "ironsForBuild": 20,
+            "stonesForBuild": 20,
+            "woodsForBuild": 20
+        }
+    ],
+    "stats": {
+        "xp": 0,
+        "strength": 0,
+        "ability": 0,
+        "intelligence": 0
+    },        
+    "items": {
+        "woods": 1000,
+        "stones": 1000,
+        "irons": 1000,
+        "golds": 1000
+    },
+    "npcWays": []
+}

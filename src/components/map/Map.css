@@ -1,0 +1,46 @@
+* {
+    box-sizing: border-box;
+}
+
+.camera {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.water {
+    z-index: 0;
+    position: absolute;
+    background-image: url('../../../public/assets/water.png');
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.island {
+    z-index: 1;
+    position: absolute;
+    image-rendering: pixelated;
+    background-image: url('../../../public/assets/island.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#zoom-in {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 80px;
+    height: 40px;
+}
+
+#zoom-out {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    z-index: 2;
+    width: 80px;
+    height: 40px;
+}

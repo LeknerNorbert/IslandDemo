@@ -1,0 +1,10 @@
+.overlay-container {
+    position: absolute;
+    width: 100vw;
+    height: 0;
+}
+
+.sprite-image {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
