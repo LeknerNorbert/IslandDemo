@@ -7,18 +7,41 @@ export class BuildingArea {
 
 export class BuiltBuilding {
     constructor (
-        coordX, coordY, level, maxLevel, name, imagePath, goldsForUpdate, ironsForUpdate, stonesForUpdate, woodsForUpdate) {
+        coordX, 
+        coordY, 
+        level, 
+        maxLevel, 
+        name, 
+        description, 
+        imagePath, 
+        goldsForUpdate, 
+        ironsForUpdate, 
+        stonesForUpdate, 
+        woodsForUpdate, 
+        productionInterval,
+        lastCollectTime,
+        goldsProduced,
+        ironsProduced,
+        stonesProduced,
+        woodsProduced) {
         
         this.coordX = coordX
         this.coordY = coordY
         this.level = level
         this.maxLevel = maxLevel
         this.name = name
+        this.description = description
         this.imagePath = imagePath
         this.goldsForUpdate = goldsForUpdate
         this.ironsForUpdate = ironsForUpdate
         this.stonesForUpdate = stonesForUpdate
         this.woodsForUpdate = woodsForUpdate
+        this.productionInterval = productionInterval
+        this.lastCollectTime = lastCollectTime
+        this.goldsProduced = goldsProduced
+        this.ironsProduced = ironsProduced
+        this.stonesProduced = stonesProduced
+        this.woodsProduced = woodsProduced
     }
 
     checkCanBeUpdate(availableGolds, availableIrons, availableStones, availableWoods) {        

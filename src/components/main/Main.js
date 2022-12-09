@@ -29,6 +29,9 @@ export default class Main extends Component {
       waitToBuild: null,
       selectedBuildingToUpdate: null
     }
+
+    this.startTimeout = null
+    this.productionInterval = null
   }
     
   async fetchInitFile() {
@@ -58,11 +61,19 @@ export default class Main extends Component {
         b.level,
         b.maxLevel,
         b.name,
+        b.description,
         b.imagePath,
         b.goldsForUpdate,
         b.ironsForUpdate,
         b.stonesForUpdate,
-        b.woodsForUpdate
+        b.woodsForUpdate,
+        b.productionInterval,
+        b.producedItems,
+        b.lastCollectTime,
+        b.goldsProduced,
+        b.ironsProduced,
+        b.stonesProduced,
+        b.woodsProduced
       )
     )
 
@@ -112,13 +123,65 @@ export default class Main extends Component {
     }))
   }
 
-  collectProducedItems = (items) => {
-    console.log(items)
+  buildBuilding = (chosenCoordX, chosenCoordY) => {
+    if(this.state.waitToBuild != null) {
+      const chosenBuilding = this.state.unbuiltBuildings.find(u => u.name == this.state.waitToBuild)
+      
+      // Ez majd backendről fog jönni
+      const newBuiltBuilding = new BuiltBuilding (
+        chosenCoordX,
+        chosenCoordY,
+        1,
+        3,
+        chosenBuilding.name,
+        "Example description",
+        '/assets/house-lvl-1.png',
+        200,
+        200,
+        200,
+        200,
+        10,
+        [
+          {
+            type: 'Golds',
+            count: '10'
+          }
+        ]
+      )
+
+      console.log(newBuiltBuilding)
+      
+      this.setState(state => ({
+        ...state,
+        availableBuildingAreas: state.availableBuildingAreas.filter(a => !(a.coordX == chosenCoordX && a.coordY == chosenCoordY)),
+        builtBuildings: [...state.builtBuildings, newBuiltBuilding],
+        unbuiltBuildings: state.unbuiltBuildings.filter(u => u.name != this.state.waitToBuild),
+        items: {
+          woods: state.items.woods - chosenBuilding.woodsForBuild,
+          stones: state.items.stones - chosenBuilding.stonesForBuild,
+          irons: state.items.irons - chosenBuilding.ironsForBuild,
+          golds: state.items.golds - chosenBuilding.goldsForBuild
+        },
+        waitToBuild: null
+      }))
+    }
+  }
+
+  selectBuildingToUpdate = (building) => {
+    this.setState(state => ({
+      ...state,
+      selectedBuildingToUpdate: building
+    }))
+  }
+
+  cancelUpdateBuilding = () => {
+    this.setState(state => ({
+      ...state,
+      selectedBuildingToUpdate: null
+    }))
   }
 
   updateBuilding = (building) => {
-    
-    console.log(building)
 
     // Frissítési logika, ami ki lesz törölve, ha lesz backend
     building.level = building.level < building.maxLevel ? building.level + 1 : 3
@@ -139,58 +202,56 @@ export default class Main extends Component {
     }))
   }
 
-  cancelUpdateBuilding = () => {
-    this.setState(state => ({
-      ...state,
-      selectedBuildingToUpdate: null
-    }))
+  collectProducedItems = (building) => {
+    console.log(building)
   }
 
-  selectBuildingToUpdate = (building) => {
-    this.setState(state => ({
-      ...state,
-      selectedBuildingToUpdate: building
-    }))
+  startProductionInterval() {
+    const today = new Date()
+    let minutes = today.getMinutes()
+
+    const startTime = 10 - ( minutes % 10)
+    
+    this.startTimeout = setTimeout(() => {
+      this.productionInterval = setInterval(() => {
+        this.updateProducedItems()
+      }, 10000)
+    }, startTime)
   }
 
-  buildBuilding = (chosenCoordX, chosenCoordY) => {
-    if(this.state.waitToBuild != null) {
-      const chosenBuilding = this.state.unbuiltBuildings.find(u => u.name == this.state.waitToBuild)
-      
-      // Ez majd backendről fog jönni
-      const newBuiltBuilding = new BuiltBuilding (
-        chosenCoordX,
-        chosenCoordY,
-        1,
-        3,
-        chosenBuilding.name,
-        '/assets/house-lvl-1.png',
-        200,
-        200,
-        200,
-        200
-      )
-      
-      this.setState(state => ({
-        ...state,
-        availableBuildingAreas: state.availableBuildingAreas.filter(a => !(a.coordX == chosenCoordX && a.coordY == chosenCoordY)),
-        builtBuildings: [...state.builtBuildings, newBuiltBuilding],
-        unbuiltBuildings: state.unbuiltBuildings.filter(u => u.name != this.state.waitToBuild),
-        items: {
-          woods: state.items.woods - chosenBuilding.woodsForBuild,
-          stones: state.items.stones - chosenBuilding.stonesForBuild,
-          irons: state.items.irons - chosenBuilding.ironsForBuild,
-          golds: state.items.golds - chosenBuilding.goldsForBuild
-        },
-        waitToBuild: null
-      }))
+  clearProductionIntervals() {
+    if (this.startTimeout != null) {
+      clearTimeout(this.startTimeout)
+    }
+
+    if (this.productionInterval != null) {
+      clearInterval(this.productionInterval)
     }
   }
 
-  componentDidMount() {
-    this.fetchInitFile()
+  updateProducedItems() {
+
   }
-    
+
+  calculateProducedItemCount(lastCollectTime, count, interval) {
+    const today = new Date()
+
+    const elapsedTime = today - lastCollectTime
+    const ticks = parseInt(elapsedTime / (interval * 60000))
+
+    return ticks * count
+  }
+
+  componentDidMount() {
+    this.calculateProducedItemCount('', 1, 1)
+    this.fetchInitFile()
+    this.startProductionInterval()
+  }
+
+  componentWillUnmount() {
+    this.clearProductionIntervals()
+  }
+
   render() {
     let waitToBuildNotification;
 

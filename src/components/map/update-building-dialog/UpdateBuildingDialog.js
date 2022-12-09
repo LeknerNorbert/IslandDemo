@@ -1,9 +1,11 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import { Modal, Button, Container, Col, Row, Table } from 'react-bootstrap';
 
 export default class UpdateBuildingDialog extends Component {
     constructor(props) {
         super(props)
+
+        this.interval = null;
     }
 
     render() {
@@ -16,7 +18,7 @@ export default class UpdateBuildingDialog extends Component {
                     <Modal.Title id="contained-modal-title-vcenter">
                         { this.props.building?.name }    
                         <h6 className="card-subtitle mb-2 text-muted">
-                            Level { this.props.building?.level }/{ this.props.building?.maxLevel }
+                            { this.props.building?.description }
                         </h6> 
                     </Modal.Title>
                 </Modal.Header>
@@ -24,12 +26,7 @@ export default class UpdateBuildingDialog extends Component {
                     <Container>
                         <Row>
                             <Col xs={12} md={6}>
-                                <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Producted materials</th>
-                                        </tr>
-                                    </thead>
+                                <Table responsive>
                                     <tbody>
                                         <tr>
                                             <td>Golds</td>
@@ -52,11 +49,6 @@ export default class UpdateBuildingDialog extends Component {
                             </Col>
                             <Col xs={12} md={6}>
                                 <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Materials for updgrade</th>
-                                        </tr>
-                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td>Golds</td>
@@ -67,7 +59,7 @@ export default class UpdateBuildingDialog extends Component {
                                                 {
                                                     this.props.building?.goldsForUpdate <= this.props.items.golds ?
                                                     <i className="bi bi-check"></i> :
-                                                    <i class="bi bi-x"></i>
+                                                    <i className="bi bi-x"></i>
                                                 }
                                             </td>
                                         </tr>
@@ -80,7 +72,7 @@ export default class UpdateBuildingDialog extends Component {
                                                 {
                                                     this.props.building?.ironsForUpdate <= this.props.items.irons ?
                                                     <i className="bi bi-check"></i> :
-                                                    <i class="bi bi-x"></i>
+                                                    <i className="bi bi-x"></i>
                                                 }
                                             </td>
                                         </tr>
@@ -93,7 +85,7 @@ export default class UpdateBuildingDialog extends Component {
                                                 {
                                                     this.props.building?.stonesForUpdate <= this.props.items.stones ?
                                                     <i className="bi bi-check"></i> :
-                                                    <i class="bi bi-x"></i>
+                                                    <i className="bi bi-x"></i>
                                                 }
                                             </td>
                                         </tr>
@@ -106,7 +98,7 @@ export default class UpdateBuildingDialog extends Component {
                                                 {
                                                     this.props.building?.woodsForUpdate <= this.props.items.woods ?
                                                     <i className="bi bi-check"></i> :
-                                                    <i class="bi bi-x"></i>
+                                                    <i className="bi bi-x"></i>
                                                 }
                                             </td>
                                         </tr>

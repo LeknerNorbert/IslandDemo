@@ -9,21 +9,11 @@ export default class Building extends Component{
         super(props)
 
         this.ref = React.createRef()
-
-        this.state = {
-            producedItems: [{}]
-        }
     }
 
-    // Feliratkozni a websocket kapcsolatra, ahonnan jönnek majd folyamatosan a termelt itemek
 
     handleClick() {
-        this.props.collectProducedItems('items')
-
-        this.setState(state => ({
-            ...state,
-            producedItems: [],
-        }))
+        this.props.collectProducedItems(this.props.building)
     }
 
     render() {
@@ -31,16 +21,17 @@ export default class Building extends Component{
             <div className="w-100 h-100">
                 <div className="overlay-container" ref={this.ref}></div>
                 <OverlayTrigger
-                    show={ this.state.producedItems.length > 0 }
+                    show={ true }
                     container={ this.ref }
                     trigger={null}
                     overlay={
                         <MovablePopover zoom={this.props.zoom}> 
                             <div className="d-flex flex-column justify-content-center">
-
+                        
                                 <Button 
                                     onClick={() => this.handleClick()}
 
+                                    className="mt-2"
                                     variant="primary">
                                     <i className="bi bi-cart-check-fill"></i>
                                 </Button>

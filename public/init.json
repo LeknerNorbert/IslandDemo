@@ -12,11 +12,18 @@
             "level": 1,
             "maxLevel": 3,
             "name": "Church",
+            "description": "The church gives you extra luck in battle",
             "imagePath": "assets/house-lvl-1.png",
             "goldsForUpdate": 200,
             "ironsForUpdate": 200,
             "stonesForUpdate": 200,
-            "woodsForUpdate": 200
+            "woodsForUpdate": 200,
+            "productionInterval": 10,
+            "lastCollectTime": "",
+            "goldsProduced": 10, 
+            "ironsProduced": 10,
+            "stonesProduced": 10, 
+            "woodsProduced": 10 
         }
     ],
     "unbuiltBuildings": [

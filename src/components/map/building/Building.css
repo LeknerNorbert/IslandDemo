@@ -7,4 +7,5 @@
 .sprite-image {
     background-repeat: no-repeat;
     background-size: cover;
+    cursor: pointer;
 }
