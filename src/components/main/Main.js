@@ -206,7 +206,6 @@ export default class Main extends Component {
   }
 
   updateProducedItemsOfBuildings() {
-    console.log('called at: ' + new Date())
     const buildings = this.state.builtBuildings
 
     for(let building of buildings) {
@@ -216,6 +215,8 @@ export default class Main extends Component {
       building.alreadyProducedWoods = this.calculateProducedItemCount(building.lastCollectTime, building.produceWoodsCount, building.productionInterval)
     }
     
+    console.log(buildings)
+
     this.setState(state => ({
       ...state,
       builtBuildings: buildings
@@ -228,6 +229,9 @@ export default class Main extends Component {
     const elapsedTime = today - lastCollectTime
     const ticks = parseInt(elapsedTime / (interval * 60000))
 
+    console.log('el. time: ' + elapsedTime)
+    console.log('interval: ' + interval)
+    console.log(ticks * count)
     return ticks * count
   }
 

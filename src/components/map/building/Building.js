@@ -43,17 +43,17 @@ export default class Building extends Component{
                                     }    
                                     {
                                         this.props.building.alreadyProducedIrons > 0 ? 
-                                        <li>{ this.props.building.alreadyProducedGold } termelt vas</li> : 
+                                        <li>{ this.props.building.alreadyProducedIrons } termelt vas</li> : 
                                         null
                                     }  
                                     {
                                         this.props.building.alreadyProducedStones > 0 ? 
-                                        <li>{ this.props.building.alreadyProducedGold } termelt kő</li> : 
+                                        <li>{ this.props.building.alreadyProducedStones } termelt kő</li> : 
                                         null
                                     }  
                                     {
                                         this.props.building.alreadyProducedWoods > 0 ? 
-                                        <li>{ this.props.building.alreadyProducedGold } termelt fa</li> : 
+                                        <li>{ this.props.building.alreadyProducedWoods } termelt fa</li> : 
                                         null
                                     }  
                                 </ul>
