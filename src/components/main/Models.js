@@ -6,6 +6,11 @@ export class BuildingArea {
 }
 
 export class BuiltBuilding {
+    #produceGoldCount = 0
+    #produceIronsCount = 0
+    #produceStonesCount = 0
+    #produceWoodsCount = 0
+    
     constructor (
         coordX, 
         coordY, 
@@ -20,10 +25,14 @@ export class BuiltBuilding {
         woodsForUpdate, 
         productionInterval,
         lastCollectTime,
-        goldsProduced,
-        ironsProduced,
-        stonesProduced,
-        woodsProduced) {
+        produceGoldCount,
+        produceIronsCount,
+        produceStonesCount,
+        produceWoodsCount,
+        alreadyProducedGold,
+        alreadyProducedIrons,
+        alreadyProducedStones,
+        alreadyProducedWoods) {
         
         this.coordX = coordX
         this.coordY = coordY
@@ -38,10 +47,14 @@ export class BuiltBuilding {
         this.woodsForUpdate = woodsForUpdate
         this.productionInterval = productionInterval
         this.lastCollectTime = lastCollectTime
-        this.goldsProduced = goldsProduced
-        this.ironsProduced = ironsProduced
-        this.stonesProduced = stonesProduced
-        this.woodsProduced = woodsProduced
+        this.produceGoldCount = produceGoldCount
+        this.produceIronsCount = produceIronsCount
+        this.produceStonesCount = produceStonesCount
+        this.produceWoodsCount = produceWoodsCount
+        this.alreadyProducedGold = alreadyProducedGold 
+        this.alreadyProducedIrons = alreadyProducedIrons
+        this.alreadyProducedStones = alreadyProducedStones
+        this.alreadyProducedWoods = alreadyProducedWoods
     }
 
     checkCanBeUpdate(availableGolds, availableIrons, availableStones, availableWoods) {        

@@ -11,27 +11,52 @@ export default class Building extends Component{
         this.ref = React.createRef()
     }
 
-
     handleClick() {
         this.props.collectProducedItems(this.props.building)
     }
 
     render() {
+        const display = (
+            this.props.building.alreadyProducedGold +
+            this.props.building.alreadyProducedIrons +
+            this.props.building.alreadyProducedStones +
+            this.props.building.alreadyProducedWoods > 0 )
+
         return (
             <div className="w-100 h-100">
                 <div className="overlay-container" ref={this.ref}></div>
                 <OverlayTrigger
-                    show={ true }
+                    show={ display }
                     container={ this.ref }
                     trigger={null}
                     overlay={
                         <MovablePopover zoom={this.props.zoom}> 
                             <div className="d-flex flex-column justify-content-center">
-                        
+                                <ul className="list-unstyled">
+                                    {
+                                        this.props.building.alreadyProducedGold > 0 ? 
+                                        <li>{ this.props.building.alreadyProducedGold } termelt arany</li> : 
+                                        null
+                                    }    
+                                    {
+                                        this.props.building.alreadyProducedIrons > 0 ? 
+                                        <li>{ this.props.building.alreadyProducedGold } termelt vas</li> : 
+                                        null
+                                    }  
+                                    {
+                                        this.props.building.alreadyProducedStones > 0 ? 
+                                        <li>{ this.props.building.alreadyProducedGold } termelt kő</li> : 
+                                        null
+                                    }  
+                                    {
+                                        this.props.building.alreadyProducedWoods > 0 ? 
+                                        <li>{ this.props.building.alreadyProducedGold } termelt fa</li> : 
+                                        null
+                                    }  
+                                </ul>
+
                                 <Button 
                                     onClick={() => this.handleClick()}
-
-                                    className="mt-2"
                                     variant="primary">
                                     <i className="bi bi-cart-check-fill"></i>
                                 </Button>

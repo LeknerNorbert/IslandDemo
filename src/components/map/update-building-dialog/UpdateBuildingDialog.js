@@ -29,20 +29,20 @@ export default class UpdateBuildingDialog extends Component {
                                 <Table responsive>
                                     <tbody>
                                         <tr>
-                                            <td>Golds</td>
-                                            <td>0/h</td>
+                                            <td>Termelt arany</td>
+                                            <td>{ this.props.building?.produceGoldCount }/{ this.props.building?.productionInterval } perc</td>
                                         </tr>
                                         <tr>
-                                            <td>Irons</td>
-                                            <td>0/h</td>
+                                            <td>Termelt vas</td>
+                                            <td>{ this.props.building?.produceIronsCount }/{ this.props.building?.productionInterval } perc</td>
                                         </tr>
                                         <tr>
-                                            <td>Stones</td>
-                                            <td>0/h</td>
+                                            <td>Termelt kő</td>
+                                            <td>{ this.props.building?.produceStonesCount }/{ this.props.building?.productionInterval } perc</td>
                                         </tr>
                                         <tr>
-                                            <td>Woods</td>
-                                            <td>0/h</td>
+                                            <td>Termel fa</td>
+                                            <td>{ this.props.building?.produceWoodsCount }/{ this.props.building?.productionInterval } perc</td>
                                         </tr>
                                     </tbody>
                                 </Table>

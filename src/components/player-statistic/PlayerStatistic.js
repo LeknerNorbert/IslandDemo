@@ -20,15 +20,15 @@ export default class PlayerStatistic extends Component {
             <div className="stats">
                 <Card style={{ width: '18rem' }} className="border-0 rounded-0">
                     <Card.Body>
-                        <Card.Title as="h6" className="card-subtitle mb-2 text-muted">Your island has</Card.Title>
-                        <Card.Title as="h5">Items</Card.Title>
+                        <Card.Title as="h6" className="card-subtitle mb-2 text-muted">Sziget adatai</Card.Title>
+                        <Card.Title as="h5">Építőanyagok</Card.Title>
                     </Card.Body>
                     <ListGroup variant="flush" className="border-top border-bottom">
                         <ListGroup.Item
                             as="li"
                             className="d-flex justify-content-between align-items-center"
                         >
-                            Golds
+                            Arany
                             <Badge bg="primary" pill>
                             { this.props.items.golds }
                             </Badge>
@@ -37,7 +37,7 @@ export default class PlayerStatistic extends Component {
                             as="li"
                             className="d-flex justify-content-between align-items-center"
                         >
-                            Irons
+                            Vas
                             <Badge bg="primary" pill>
                             { this.props.items.irons }
                             </Badge>
@@ -46,7 +46,7 @@ export default class PlayerStatistic extends Component {
                             as="li"
                             className="d-flex justify-content-between align-items-center"
                         >
-                            Stones
+                            Kő
                             <Badge bg="primary" pill>
                             { this.props.items.stones }
                             </Badge>
@@ -55,7 +55,7 @@ export default class PlayerStatistic extends Component {
                             as="li"
                             className="d-flex justify-content-between align-items-center"
                         >
-                            Woods
+                            Fa
                             <Badge bg="primary" pill>
                             { this.props.items.woods }
                             </Badge>
@@ -65,7 +65,7 @@ export default class PlayerStatistic extends Component {
                         this.props.unbuiltBuildings.length > 0 ?
                         <div>
                             <Card.Body>
-                                <Card.Title as="h5">Unbuilt buildings</Card.Title>
+                                <Card.Title as="h5">Építésre váró épületek</Card.Title>
                             </Card.Body>
                             <ListGroup variant="flush" className="border-top border-bottom">
                                 {
@@ -86,19 +86,21 @@ export default class PlayerStatistic extends Component {
                                                         this.props.items.irons, 
                                                         this.props.items.stones, 
                                                         this.props.items.woods) || this.props.waitToBuild }>
-                                                    Build
+                                                    Megépít
                                                 </Button>
                                                 <OverlayTrigger 
                                                     trigger="click" 
                                                     placement="right" 
                                                     overlay={
                                                         <Popover id="popover-basic">
-                                                            <Popover.Header as="h3">Materials needed for building</Popover.Header>
+                                                            <Popover.Header as="h3">Szükséges nyersanyagok</Popover.Header>
                                                             <Popover.Body>
-                                                                <p>Golds: { building.goldsForBuild }</p>
-                                                                <p>Irons: { building.ironsForBuild }</p>
-                                                                <p>Stones: { building.stonesForBuild }</p>
-                                                                <p>Woods: { building.woodsForBuild }</p>
+                                                                <ul className="list-unstyled">
+                                                                    <li className='mb-1 fs-6'>Arany: { building.goldsForBuild }</li>
+                                                                    <li className='mb-1 fs-6'>Vas: { building.ironsForBuild }</li>
+                                                                    <li className='mb-1 fs-6'>Kő: { building.stonesForBuild }</li>
+                                                                    <li className='mb-1 fs-6'>Fa: { building.woodsForBuild }</li>
+                                                                </ul>
                                                             </Popover.Body>
                                                         </Popover>
                                                     }>
@@ -115,7 +117,7 @@ export default class PlayerStatistic extends Component {
                         null
                     }
                     <Card.Body>
-                        <Card.Text><small className="text-muted">Last updated 3 mins ago</small></Card.Text>
+                        <Card.Text><small className="text-muted">Utolsó belépés 12 perccel ezelőtt</small></Card.Text>
                     </Card.Body>
                 </Card>
             </div>

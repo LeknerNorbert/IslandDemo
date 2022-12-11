@@ -7,49 +7,49 @@
     ],
     "builtBuildings": [
         {
-            "coordX": 10,
-            "coordY": 10,
-            "level": 1,
-            "maxLevel": 3,
-            "name": "Church",
-            "description": "The church gives you extra luck in battle",
-            "imagePath": "assets/house-lvl-1.png",
-            "goldsForUpdate": 200,
-            "ironsForUpdate": 200,
-            "stonesForUpdate": 200,
-            "woodsForUpdate": 200,
+            "coordX": 10, 
+            "coordY": 10, 
+            "level": 2, 
+            "maxLevel": 3, 
+            "name": "Templom", 
+            "description": "A templom növeli a kritikus támadások esélyét harc közben", 
+            "imagePath": "/assets/house-lvl-2.png", 
+            "goldsForUpdate": 100, 
+            "ironsForUpdate": 100, 
+            "stonesForUpdate": 100, 
+            "woodsForUpdate": 100, 
             "productionInterval": 10,
-            "lastCollectTime": "",
-            "goldsProduced": 10, 
-            "ironsProduced": 10,
-            "stonesProduced": 10, 
-            "woodsProduced": 10 
+            "lastCollectTime": "2022-12-10",
+            "produceGoldCount": 10,
+            "produceIronsCount": 10,
+            "produceStonesCount": 10,
+            "produceWoodsCount": 0
         }
     ],
     "unbuiltBuildings": [
         { 
-            "name": "Lumber Yard",
+            "name": "Fatelep",
             "goldsForBuild": 100,
             "ironsForBuild": 20,
             "stonesForBuild": 20,
             "woodsForBuild": 20
         },
         {
-            "name": "Mine",
+            "name": "Bánya",
             "goldsForBuild": 100,
             "ironsForBuild": 20,
             "stonesForBuild": 20,
             "woodsForBuild": 20
         },
         {
-            "name": "Practice Range",
+            "name": "Kiképző hely",
             "goldsForBuild": 100,
             "ironsForBuild": 20,
             "stonesForBuild": 20,
             "woodsForBuild": 20 
         },
         {
-            "name": "Factory",
+            "name": "Gyár",
             "goldsForBuild": 100,
             "ironsForBuild": 20,
             "stonesForBuild": 20,

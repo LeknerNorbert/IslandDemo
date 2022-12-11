@@ -56,24 +56,27 @@ export default class Main extends Component {
 
     const builtBuildings = initFile.builtBuildings?.map(b => 
       new BuiltBuilding(
-        b.coordX,
-        b.coordY,
-        b.level,
-        b.maxLevel,
-        b.name,
-        b.description,
-        b.imagePath,
-        b.goldsForUpdate,
-        b.ironsForUpdate,
-        b.stonesForUpdate,
-        b.woodsForUpdate,
+        b.coordX, 
+        b.coordY, 
+        b.level, 
+        b.maxLevel, 
+        b.name, 
+        b.description, 
+        b.imagePath, 
+        b.goldsForUpdate, 
+        b.ironsForUpdate, 
+        b.stonesForUpdate, 
+        b.woodsForUpdate, 
         b.productionInterval,
-        b.producedItems,
-        b.lastCollectTime,
-        b.goldsProduced,
-        b.ironsProduced,
-        b.stonesProduced,
-        b.woodsProduced
+        new Date(b.lastCollectTime),
+        b.produceGoldCount,
+        b.produceIronsCount,
+        b.produceStonesCount,
+        b.produceWoodsCount,
+        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceGoldCount, b.productionInterval),
+        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceIronsCount, b.productionInterval),
+        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceStonesCount, b.productionInterval),
+        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceWoodsCount, b.productionInterval)
       )
     )
 
@@ -105,7 +108,6 @@ export default class Main extends Component {
         irons: initFile.items.irons,
         golds: initFile.items.golds
       },
-
     }))
   }
   
@@ -134,22 +136,23 @@ export default class Main extends Component {
         1,
         3,
         chosenBuilding.name,
-        "Example description",
+        "...",
         '/assets/house-lvl-1.png',
         200,
         200,
         200,
         200,
+        20,
+        new Date(),
+        0,
+        30,
         10,
-        [
-          {
-            type: 'Golds',
-            count: '10'
-          }
-        ]
+        20,
+        0,
+        0,
+        0,
+        0
       )
-
-      console.log(newBuiltBuilding)
       
       this.setState(state => ({
         ...state,
@@ -202,21 +205,89 @@ export default class Main extends Component {
     }))
   }
 
+  updateProducedItemsOfBuildings() {
+    console.log('called at: ' + new Date())
+    const buildings = this.state.builtBuildings
+
+    for(let building of buildings) {
+      building.alreadyProducedGold = this.calculateProducedItemCount(building.lastCollectTime, building.produceGoldCount, building.productionInterval)
+      building.alreadyProducedIrons = this.calculateProducedItemCount(building.lastCollectTime, building.produceIronsCount, building.productionInterval)
+      building.alreadyProducedStones = this.calculateProducedItemCount(building.lastCollectTime, building.produceStonesCount, building.productionInterval)
+      building.alreadyProducedWoods = this.calculateProducedItemCount(building.lastCollectTime, building.produceWoodsCount, building.productionInterval)
+    }
+    
+    this.setState(state => ({
+      ...state,
+      builtBuildings: buildings
+    }))
+  }
+
+  calculateProducedItemCount(lastCollectTime, count, interval) {
+    const today = new Date()
+
+    const elapsedTime = today - lastCollectTime
+    const ticks = parseInt(elapsedTime / (interval * 60000))
+
+    return ticks * count
+  }
+
   collectProducedItems = (building) => {
-    console.log(building)
+    
+    // Elküldeni a szervernek a frissítás dátumát
+
+    const buildingAfterCollect = new BuiltBuilding(
+      building.coordX, 
+      building.coordY, 
+      building.level, 
+      building.maxLevel, 
+      building.name, 
+      building.description, 
+      building.imagePath, 
+      building.goldsForUpdate, 
+      building.ironsForUpdate, 
+      building.stonesForUpdate, 
+      building.woodsForUpdate, 
+      building.productionInterval,
+      new Date(),
+      building.produceGoldCount,
+      building.produceIronsCount,
+      building.produceStonesCount,
+      building.produceWoodsCount,
+      0,
+      0,
+      0,
+      0
+    )
+
+    this.setState(state => ({
+      ...state,
+      builtBuildings: state.builtBuildings.map(b => (
+        b.name == buildingAfterCollect.name ? buildingAfterCollect : b
+      )),
+      items: {
+        woods: state.items.woods + building.alreadyProducedWoods,
+        stones: state.items.stones + building.alreadyProducedStones,
+        irons: state.items.irons + building.alreadyProducedIrons,
+        golds: state.items.golds + building.alreadyProducedGold
+      }
+    }))
   }
 
   startProductionInterval() {
     const today = new Date()
     let minutes = today.getMinutes()
+    let seconds = today.getSeconds()
 
-    const startTime = 10 - ( minutes % 10)
-    
+    const startTimeInMinutes = 10 - ( minutes % 10)
+    const startTimeinMilisecond = (startTimeInMinutes * 60000) - (seconds * 1000)
+
     this.startTimeout = setTimeout(() => {
+      this.updateProducedItemsOfBuildings()
+
       this.productionInterval = setInterval(() => {
-        this.updateProducedItems()
-      }, 10000)
-    }, startTime)
+        this.updateProducedItemsOfBuildings()
+      }, 600000)
+    }, startTimeinMilisecond)
   }
 
   clearProductionIntervals() {
@@ -229,21 +300,7 @@ export default class Main extends Component {
     }
   }
 
-  updateProducedItems() {
-
-  }
-
-  calculateProducedItemCount(lastCollectTime, count, interval) {
-    const today = new Date()
-
-    const elapsedTime = today - lastCollectTime
-    const ticks = parseInt(elapsedTime / (interval * 60000))
-
-    return ticks * count
-  }
-
   componentDidMount() {
-    this.calculateProducedItemCount('', 1, 1)
     this.fetchInitFile()
     this.startProductionInterval()
   }
