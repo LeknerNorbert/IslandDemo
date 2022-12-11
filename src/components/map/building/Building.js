@@ -30,7 +30,10 @@ export default class Building extends Component{
                     container={ this.ref }
                     trigger={null}
                     overlay={
-                        <MovablePopover zoom={this.props.zoom}> 
+                        <MovablePopover 
+                            zoom={this.props.zoom} 
+                            building={this.props.building}
+                        > 
                             <div className="d-flex flex-column justify-content-center">
                                 <ul className="list-unstyled">
                                     {

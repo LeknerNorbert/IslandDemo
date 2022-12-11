@@ -142,7 +142,7 @@ export default class Main extends Component {
         200,
         200,
         200,
-        20,
+        10,
         new Date(),
         0,
         30,
