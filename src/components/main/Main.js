@@ -79,8 +79,10 @@ export default class Main extends Component {
         this.calculateProducedItem(new Date(b.lastCollectTime), b.produceIronsCount, b.productionInterval),
         this.calculateProducedItem(new Date(b.lastCollectTime), b.produceStonesCount, b.productionInterval),
         this.calculateProducedItem(new Date(b.lastCollectTime), b.produceWoodsCount, b.productionInterval),
+        this.addMilisecondsToDate(this.calculateStartTimeInMiliseconds(new Date(b.buildDate), b.productionInterval))
       )
     )
+
 
     const unbuiltBuildings = initFile.unbuiltBuildings?.map(b => 
       new UnbuiltBuilding(
@@ -162,7 +164,8 @@ export default class Main extends Component {
         0,
         0,
         0,
-        0
+        0,
+        this.addMilisecondsToDate(this.calculateStartTimeInMiliseconds(buildDate, 180000))
       )
       
       this.startUpdateItemTimer(newBuiltBuilding)
@@ -218,29 +221,65 @@ export default class Main extends Component {
     }))
   }
 
-  startUpdateItemTimer(building) {
-    console.log('timer start')
+  calculateStartTimeInMiliseconds(buildDate, productionInterval) {
     const today = new Date()
+    const elapsedTimeSinceBuild = today - buildDate
 
-    const elapsedTimeSinceBuild = today - building.buildDate
-    let start = 0
+    let time
 
-    if (elapsedTimeSinceBuild > 0) {
-      start = building.productionInterval - (elapsedTimeSinceBuild % building.productionInterval)
+    if (elapsedTimeSinceBuild > 0){
+      time = productionInterval - (elapsedTimeSinceBuild % productionInterval)
     } else {
-      start = (elapsedTimeSinceBuild * -1) + building.productionInterval
+      time = Math.abs(elapsedTimeSinceBuild) + productionInterval
     }
 
+    return time
+  }
+
+  handleProducedItemUpdate(building) {
+    const tickedBuilding = this.state.builtBuildings.find(b => b.name == building.name)
+
+    tickedBuilding.alreadyProducedGold += tickedBuilding.produceGoldCount
+    tickedBuilding.alreadyProducedIrons += tickedBuilding.produceIronsCount
+    tickedBuilding.alreadyProducedStones += tickedBuilding.produceStonesCount
+    tickedBuilding.alreadyProducedWoods += tickedBuilding.produceWoodsCount
+    tickedBuilding.nextProductionDate = this.addMilisecondsToDate(tickedBuilding.productionInterval)
+
+    this.setState(state => ({
+      ...state,
+      builtBuildings: state.builtBuildings.map(b => (
+        b.name == tickedBuilding.name ? tickedBuilding : b
+      ))
+    }))
+  }
+
+  calculateProducedItem(lastCollectTime, itemCount, interval) {
+    const today = new Date()
+
+    const elapsedTimeFromLastCollection = today - lastCollectTime
+    const multiplier = parseInt(elapsedTimeFromLastCollection / interval)
+
+    return itemCount * multiplier
+  }
+
+  addMilisecondsToDate(miliseconds) {
+    const today = new Date()
+
+    today.setTime(today.getTime() + miliseconds)
+    return today
+  }
+
+  startUpdateItemTimer(building) {
+    let start = this.calculateStartTimeInMiliseconds(building.buildDate, building.productionInterval)
     let timer 
     let interval 
-    
+
     timer = setTimeout(() => {
-      console.log('first tick')
       this.handleProducedItemUpdate(building) 
 
       interval = setInterval(() => {
-        console.log('another tick')
-        this.handleProducedItemUpdate(building)}, building.productionInterval)
+        this.handleProducedItemUpdate(building)
+      }, building.productionInterval)
     }, start) 
 
     this.updateItemStartTimers.push(timer)
@@ -257,31 +296,6 @@ export default class Main extends Component {
     for(let interval of this.updateItemIntervals) {
       clearInterval(interval)
     }
-  }
-
-  handleProducedItemUpdate(building) {
-    const updatedBuilding = this.state.builtBuildings.find(b => b.name == building.name)
-
-    updatedBuilding.alreadyProducedGold = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceGoldCount, updatedBuilding.productionInterval)
-    updatedBuilding.alreadyProducedIrons = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceIronsCount, updatedBuilding.productionInterval)
-    updatedBuilding.alreadyProducedStones = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceStonesCount, updatedBuilding.productionInterval)
-    updatedBuilding.alreadyProducedWoods = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceWoodsCount, updatedBuilding.productionInterval)
-
-    this.setState(state => ({
-      ...state,
-      builtBuildings: state.builtBuildings.map(b => (
-        b.name == updatedBuilding.name ? updatedBuilding : b
-      ))
-    }))
-  }
-
-  calculateProducedItem(lastCollectTime, itemCount, interval) {
-    const today = new Date()
-
-    const elapsedTimeFromLastCollection = today - lastCollectTime
-    const multiplier = parseInt(elapsedTimeFromLastCollection / interval)
-
-    return itemCount * multiplier
   }
 
   collectProducedItems = (building) => {
@@ -310,8 +324,11 @@ export default class Main extends Component {
       0,
       0,
       0,
-      0
+      0,
+      this.addMilisecondsToDate(this.calculateStartTimeInMiliseconds(building.buildDate, building.productionInterval))
     )
+
+    console.log(buildingAfterCollect)
 
     this.setState(state => ({
       ...state,

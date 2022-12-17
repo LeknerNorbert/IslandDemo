@@ -4,10 +4,51 @@ import { Modal, Button, Container, Col, Row, Table, ModalBody } from 'react-boot
 import "./UpdateBuildingDialog.css"
 
 export default class UpdateBuildingDialog extends Component {
+    interval
+    
     constructor(props) {
         super(props)
 
-        this.interval = null;
+        this.state = {
+            timeRemainingUntilProduction: null
+        }
+
+        this.interval = null
+    }
+
+    startReaminingTime() {
+        this.handleTimeChange()
+
+        this.interval = setInterval(() => {
+            this.handleTimeChange()
+        }, 1000);
+    }
+
+    handleTimeChange() {
+        const currentDate = new Date()
+
+        this.setState(state => ({
+            ...state,
+            timeRemainingUntilProduction: new Date(this.props.building.nextProductionDate - currentDate)
+        }))
+    }
+
+    getSnapshotBeforeUpdate(prevProps) {
+        if (prevProps.show == false && this.props.show == true) {
+            return 1
+        } else if (prevProps.show == true && this.props.show == false) {
+            return 0
+        } else {
+            return -1
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (snapshot == 1) {
+            this.startReaminingTime()
+        } else if (snapshot == 0) {
+            clearInterval(this.interval)
+        }
     }
 
     render() {
@@ -18,104 +59,108 @@ export default class UpdateBuildingDialog extends Component {
                 >
                 <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        { this.props.building?.name }    
+                        { this.props.building?.name } ( { this.props.building?.level } / { this.props.building?.maxLevel } )   
                         <h6 className="card-subtitle mb-2 text-muted">
                             { this.props.building?.description }
                         </h6> 
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Container>
-                        <Row>
-                            <Col xs={12} md={6}>
-                                <Table responsive>
-                                    <tbody>
-                                        <tr>
-                                            <td>Termelt arany</td>
-                                            <td>{ this.props.building?.produceGoldCount }/{ this.props.building?.productionInterval } perc</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Termelt vas</td>
-                                            <td>{ this.props.building?.produceIronsCount }/{ this.props.building?.productionInterval } perc</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Termelt kő</td>
-                                            <td>{ this.props.building?.produceStonesCount }/{ this.props.building?.productionInterval } perc</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Termel fa</td>
-                                            <td>{ this.props.building?.produceWoodsCount }/{ this.props.building?.productionInterval } perc</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <Table>
-                                    <tbody>
-                                        <tr>
-                                            <td>Golds</td>
-                                            <td>
-                                            {this.props.items.golds}/{this.props.building?.goldsForUpdate}
-                                            </td>
-                                            <td>
-                                                {
-                                                    this.props.building?.goldsForUpdate <= this.props.items.golds ?
-                                                    <i className="bi bi-check"></i> :
-                                                    <i className="bi bi-x"></i>
-                                                }
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Irons</td>
-                                            <td>
-                                            {this.props.items.irons}/{this.props.building?.ironsForUpdate}
-                                            </td>
-                                            <td>
-                                                {
-                                                    this.props.building?.ironsForUpdate <= this.props.items.irons ?
-                                                    <i className="bi bi-check"></i> :
-                                                    <i className="bi bi-x"></i>
-                                                }
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Stones</td>
-                                            <td>
-                                                {this.props.items.stones}/{this.props.building?.stonesForUpdate}
-                                            </td>
-                                            <td>
-                                                {
-                                                    this.props.building?.stonesForUpdate <= this.props.items.stones ?
-                                                    <i className="bi bi-check"></i> :
-                                                    <i className="bi bi-x"></i>
-                                                }
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Woods</td>
-                                            <td>
-                                            {this.props.items.woods}/{this.props.building?.woodsForUpdate}
-                                            </td>
-                                            <td>
-                                                {
-                                                    this.props.building?.woodsForUpdate <= this.props.items.woods ?
-                                                    <i className="bi bi-check"></i> :
-                                                    <i className="bi bi-x"></i>
-                                                }
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
-                    </Container>
+                    <div className="border p-2 mb-3">
+                        Termelés elkészül:  { this.state.timeRemainingUntilProduction?.getHours() - 1}h { this.state.timeRemainingUntilProduction?.getMinutes() }m { this.state.timeRemainingUntilProduction?.getSeconds() }s
+                    </div>
+                    <Table responsive bordered>
+                        <thead>
+                            <tr>
+                                <th colSpan="3">Termelt nyersanyagok</th>
+                            </tr>
+                            <tr>
+                                <th>Nyersanyag</th>
+                                <th>Mennyiség</th>
+                                <th>Időtartam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Arany</td>
+                                <td>{ this.props.building?.produceGoldCount } darab</td>
+                                <td>{ this.props.building?.productionInterval / 60000 } perc</td>
+                            </tr>
+                            <tr>
+                                <td>Vas</td>
+                                <td>{ this.props.building?.produceIronsCount } darab</td>
+                                <td>{ this.props.building?.productionInterval / 60000 } perc</td>
+                            </tr>
+                            <tr>
+                                <td>Kő</td>
+                                <td>{ this.props.building?.produceStonesCount } darab</td>
+                                <td>{ this.props.building?.productionInterval / 60000 } perc</td>
+                            </tr>
+                            <tr>
+                                <td>Fa</td>
+                                <td>{ this.props.building?.produceWoodsCount } darab</td>
+                                <td>{ this.props.building?.productionInterval / 60000 } perc</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                
+                    <Table responsive bordered>
+                    <thead>
+                        <tr>
+                            <th colSpan="3">Frissitéshez szükséges nyersanyagok</th>
+                        </tr>
+                        <tr>
+                            <th>Nyersanyag</th>
+                            <th>Készleten</th>
+                            <th>Szükséges</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            <tr>
+                                <td>Arany</td>
+                                <td>
+                                    {this.props.items.golds} darab
+                                </td>
+                                <td>
+                                    {this.props.building?.goldsForUpdate} darab
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Vas</td>
+                                <td>
+                                    {this.props.items.irons} darab
+                                </td>
+                                <td>
+                                    {this.props.building?.ironsForUpdate} darab
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kő</td>
+                                <td>
+                                    {this.props.items.stones} darab
+                                </td>
+                                <td>
+                                    {this.props.building?.stonesForUpdate} darab
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fa</td>
+                                <td>
+                                    {this.props.items.woods} darab
+                                </td>
+                                <td>
+                                    {this.props.building?.woodsForUpdate} darab
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button 
                         onClick={() => this.props.cancelUpdateBuilding()}
                         variant="outline-primary"
                         >
-                        Close
+                        Mégse
                     </Button>
                     <Button 
                         onClick={() => this.props.updateBuilding(this.props.building)}
@@ -129,7 +174,7 @@ export default class UpdateBuildingDialog extends Component {
                             )
                         }
                         >
-                        Update <i className="bi bi-box-arrow-up"></i>
+                        Fejlesztés <i className="bi bi-box-arrow-up"></i>
                     </Button>
                 </Modal.Footer>
             </Modal>

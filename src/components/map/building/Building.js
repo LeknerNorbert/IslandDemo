@@ -5,16 +5,18 @@ import React, { Component } from 'react';
 import { OverlayTrigger, Button } from 'react-bootstrap';
 
 export default class Building extends Component{
+    interval 
+    
     constructor(props) {
         super(props)
 
         this.ref = React.createRef()
 
         this.state = {
-            remainingTime: null
+            remainingTime: null,
         }
 
-        let interval;
+        this.interval = null
     }
 
     handleClick() {
@@ -52,14 +54,14 @@ export default class Building extends Component{
         }
     }
 
+    clearRemainingTime() {
+        clearInterval(this.interval)
+    }
+
     componentDidMount() {
         if (!this.checkAlreadyBuilded()) {
             this.startReaminingTimeTimer()
         }
-    }
-    
-    clearRemainingTime() {
-        clearInterval(this.interval)
     }
 
     componentWillUnmount() {

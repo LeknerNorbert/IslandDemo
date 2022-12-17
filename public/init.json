@@ -19,7 +19,7 @@
             "ironsForUpdate": 100, 
             "stonesForUpdate": 100, 
             "woodsForUpdate": 100, 
-            "productionInterval": 180000,
+            "productionInterval": 30000,
             "lastCollectTime": "2022-12-17T01:00:00",
             "produceGoldCount": 10,
             "produceIronsCount": 10,

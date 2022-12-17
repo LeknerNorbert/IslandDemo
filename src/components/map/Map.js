@@ -4,7 +4,6 @@ import Tile from './tile/Tile.js'
 import React from "react";
 import Building from "./building/Building.js";
 import { Spinner } from 'react-bootstrap';
-import { AnimateKeyframes }  from 'react-simple-animate';
 
 
 import './Map.css'
@@ -235,7 +234,7 @@ export default class Map extends Component {
                         left: this.state.islandX,
                     }}>
 
-                    {
+                    {/* {
                         coords.map(coord => (
                             coord.map(latitude => (
                                 <Tile 
@@ -249,7 +248,7 @@ export default class Map extends Component {
                                 </Tile>
                             ))
                         ))
-                    }
+                    } */}
 
                     {
                         this.props.availableBuildingAreas.map((area, index) => (

@@ -28,7 +28,8 @@ export class BuiltBuilding {
         alreadyProducedGold,
         alreadyProducedIrons,
         alreadyProducedStones,
-        alreadyProducedWoods) {
+        alreadyProducedWoods,
+        nextProductionDate) {
         
         this.coordX = coordX
         this.coordY = coordY
@@ -52,6 +53,7 @@ export class BuiltBuilding {
         this.alreadyProducedIrons = alreadyProducedIrons
         this.alreadyProducedStones = alreadyProducedStones
         this.alreadyProducedWoods = alreadyProducedWoods
+        this.nextProductionDate = nextProductionDate
     }
 
     checkCanBeUpdate(availableGolds, availableIrons, availableStones, availableWoods) {        
