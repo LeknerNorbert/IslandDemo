@@ -328,8 +328,6 @@ export default class Main extends Component {
       this.addMilisecondsToDate(this.calculateStartTimeInMiliseconds(building.buildDate, building.productionInterval))
     )
 
-    console.log(buildingAfterCollect)
-
     this.setState(state => ({
       ...state,
       builtBuildings: state.builtBuildings.map(b => (
