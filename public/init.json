@@ -9,17 +9,18 @@
         {
             "coordX": 10, 
             "coordY": 10, 
-            "level": 2, 
+            "level": 1, 
             "maxLevel": 3, 
             "name": "Templom", 
+            "buildDate": "2022-12-17T02:05:00",
             "description": "A templom növeli a kritikus támadások esélyét harc közben", 
-            "imagePath": "/assets/house-lvl-2.png", 
+            "imagePath": "/assets/house-lvl-1.png", 
             "goldsForUpdate": 100, 
             "ironsForUpdate": 100, 
             "stonesForUpdate": 100, 
             "woodsForUpdate": 100, 
-            "productionInterval": 10,
-            "lastCollectTime": "2022-12-10",
+            "productionInterval": 180000,
+            "lastCollectTime": "2022-12-17T01:00:00",
             "produceGoldCount": 10,
             "produceIronsCount": 10,
             "produceStonesCount": 10,
@@ -68,5 +69,94 @@
         "irons": 1000,
         "golds": 1000
     },
-    "npcWays": []
+    "npcRoutes": [
+        { 
+            "coordX": 5,
+            "coordY": 8 
+        },
+        { 
+            "coordX": 5,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 6,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 7,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 8,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 9,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 10,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 10,
+            "coordY": 10
+        },
+        { 
+            "coordX": 11,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 12,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 13,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 14,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 15,
+            "coordY": 9 
+        },
+        { 
+            "coordX": 15,
+            "coordY": 8 
+        },
+        { 
+            "coordX": 15,
+            "coordY": 7 
+        },
+        { 
+            "coordX": 15,
+            "coordY": 6 
+        },
+        { 
+            "coordX": 15,
+            "coordY": 10 
+        },
+        { 
+            "coordX": 16,
+            "coordY": 10 
+        },
+        { 
+            "coordX": 17,
+            "coordY": 10 
+        },
+        { 
+            "coordX": 18,
+            "coordY": 10 
+        },
+        { 
+            "coordX": 19,
+            "coordY": 10 
+        },
+        { 
+            "coordX": 20,
+            "coordY": 10 
+        }
+    ]
 }

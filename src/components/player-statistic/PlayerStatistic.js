@@ -89,18 +89,16 @@ export default class PlayerStatistic extends Component {
                                                     Megépít
                                                 </Button>
                                                 <OverlayTrigger 
-                                                    trigger="click" 
+                                                    trigger="focus" 
                                                     placement="right" 
                                                     overlay={
-                                                        <Popover id="popover-basic">
-                                                            <Popover.Header as="h3">Szükséges nyersanyagok</Popover.Header>
-                                                            <Popover.Body>
-                                                                <ul className="list-unstyled">
-                                                                    <li className='mb-1 fs-6'>Arany: { building.goldsForBuild }</li>
-                                                                    <li className='mb-1 fs-6'>Vas: { building.ironsForBuild }</li>
-                                                                    <li className='mb-1 fs-6'>Kő: { building.stonesForBuild }</li>
-                                                                    <li className='mb-1 fs-6'>Fa: { building.woodsForBuild }</li>
-                                                                </ul>
+                                                        <Popover id="popover-basic" className="rounded-0">
+                                                            <Popover.Header as="h3" className="bg-body">Szükséges nyersanyagok</Popover.Header>
+                                                            <Popover.Body className="d-flex flex-column">
+                                                                <span className='mb-1 fs-6'>Arany: { building.goldsForBuild }</span>
+                                                                <span className='mb-1 fs-6'>Vas: { building.ironsForBuild }</span>
+                                                                <span className='mb-1 fs-6'>Kő: { building.stonesForBuild }</span>
+                                                                <span className='fs-6'>Fa: { building.woodsForBuild }</span>
                                                             </Popover.Body>
                                                         </Popover>
                                                     }>

@@ -26,12 +26,13 @@ export default class Main extends Component {
         irons: 0,
         golds: 0
       },
+      npcWays: [],
       waitToBuild: null,
       selectedBuildingToUpdate: null
     }
 
-    this.startTimeout = null
-    this.productionInterval = null
+    this.updateItemStartTimers = []
+    this.updateItemIntervals = []
   }
     
   async fetchInitFile() {
@@ -61,6 +62,7 @@ export default class Main extends Component {
         b.level, 
         b.maxLevel, 
         b.name, 
+        new Date(b.buildDate),
         b.description, 
         b.imagePath, 
         b.goldsForUpdate, 
@@ -73,10 +75,10 @@ export default class Main extends Component {
         b.produceIronsCount,
         b.produceStonesCount,
         b.produceWoodsCount,
-        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceGoldCount, b.productionInterval),
-        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceIronsCount, b.productionInterval),
-        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceStonesCount, b.productionInterval),
-        this.calculateProducedItemCount(new Date(b.lastCollectTime), b.produceWoodsCount, b.productionInterval)
+        this.calculateProducedItem(new Date(b.lastCollectTime), b.produceGoldCount, b.productionInterval),
+        this.calculateProducedItem(new Date(b.lastCollectTime), b.produceIronsCount, b.productionInterval),
+        this.calculateProducedItem(new Date(b.lastCollectTime), b.produceStonesCount, b.productionInterval),
+        this.calculateProducedItem(new Date(b.lastCollectTime), b.produceWoodsCount, b.productionInterval),
       )
     )
 
@@ -108,7 +110,12 @@ export default class Main extends Component {
         irons: initFile.items.irons,
         golds: initFile.items.golds
       },
-    }))
+      npcRoutes: initFile.npcRoutes
+    }), () => {
+      for(let building of this.state.builtBuildings) {
+        this.startUpdateItemTimer(building)
+      }
+    })
   }
   
   selectWaitToBuild = (name) => {
@@ -126,9 +133,12 @@ export default class Main extends Component {
   }
 
   buildBuilding = (chosenCoordX, chosenCoordY) => {
-    if(this.state.waitToBuild != null) {
+    if(this.state.waitToBuild != null) {  
       const chosenBuilding = this.state.unbuiltBuildings.find(u => u.name == this.state.waitToBuild)
       
+      const buildDate = new Date()
+      buildDate.setMinutes(buildDate.getMinutes() + 2)
+
       // Ez majd backendről fog jönni
       const newBuiltBuilding = new BuiltBuilding (
         chosenCoordX,
@@ -136,13 +146,14 @@ export default class Main extends Component {
         1,
         3,
         chosenBuilding.name,
+        buildDate,
         "...",
         '/assets/house-lvl-1.png',
         200,
         200,
         200,
         200,
-        10,
+        180000,
         new Date(),
         0,
         30,
@@ -154,6 +165,8 @@ export default class Main extends Component {
         0
       )
       
+      this.startUpdateItemTimer(newBuiltBuilding)
+
       this.setState(state => ({
         ...state,
         availableBuildingAreas: state.availableBuildingAreas.filter(a => !(a.coordX == chosenCoordX && a.coordY == chosenCoordY)),
@@ -205,34 +218,70 @@ export default class Main extends Component {
     }))
   }
 
-  updateProducedItemsOfBuildings() {
-    const buildings = this.state.builtBuildings
+  startUpdateItemTimer(building) {
+    console.log('timer start')
+    const today = new Date()
 
-    for(let building of buildings) {
-      building.alreadyProducedGold = this.calculateProducedItemCount(building.lastCollectTime, building.produceGoldCount, building.productionInterval)
-      building.alreadyProducedIrons = this.calculateProducedItemCount(building.lastCollectTime, building.produceIronsCount, building.productionInterval)
-      building.alreadyProducedStones = this.calculateProducedItemCount(building.lastCollectTime, building.produceStonesCount, building.productionInterval)
-      building.alreadyProducedWoods = this.calculateProducedItemCount(building.lastCollectTime, building.produceWoodsCount, building.productionInterval)
+    const elapsedTimeSinceBuild = today - building.buildDate
+    let start = 0
+
+    if (elapsedTimeSinceBuild > 0) {
+      start = building.productionInterval - (elapsedTimeSinceBuild % building.productionInterval)
+    } else {
+      start = (elapsedTimeSinceBuild * -1) + building.productionInterval
     }
+
+    let timer 
+    let interval 
     
-    console.log(buildings)
+    timer = setTimeout(() => {
+      console.log('first tick')
+      this.handleProducedItemUpdate(building) 
+
+      interval = setInterval(() => {
+        console.log('another tick')
+        this.handleProducedItemUpdate(building)}, building.productionInterval)
+    }, start) 
+
+    this.updateItemStartTimers.push(timer)
+    this.updateItemIntervals.push(interval)
+  }
+
+  clearUpdateItemStartTimers() {
+    for(let timer of this.updateItemStartTimers) {
+      clearTimeout(timer)
+    }
+  }
+
+  clearUpdateItemIntervals() {
+    for(let interval of this.updateItemIntervals) {
+      clearInterval(interval)
+    }
+  }
+
+  handleProducedItemUpdate(building) {
+    const updatedBuilding = this.state.builtBuildings.find(b => b.name == building.name)
+
+    updatedBuilding.alreadyProducedGold = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceGoldCount, updatedBuilding.productionInterval)
+    updatedBuilding.alreadyProducedIrons = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceIronsCount, updatedBuilding.productionInterval)
+    updatedBuilding.alreadyProducedStones = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceStonesCount, updatedBuilding.productionInterval)
+    updatedBuilding.alreadyProducedWoods = this.calculateProducedItem(updatedBuilding.lastCollectTime, updatedBuilding.produceWoodsCount, updatedBuilding.productionInterval)
 
     this.setState(state => ({
       ...state,
-      builtBuildings: buildings
+      builtBuildings: state.builtBuildings.map(b => (
+        b.name == updatedBuilding.name ? updatedBuilding : b
+      ))
     }))
   }
 
-  calculateProducedItemCount(lastCollectTime, count, interval) {
+  calculateProducedItem(lastCollectTime, itemCount, interval) {
     const today = new Date()
 
-    const elapsedTime = today - lastCollectTime
-    const ticks = parseInt(elapsedTime / (interval * 60000))
+    const elapsedTimeFromLastCollection = today - lastCollectTime
+    const multiplier = parseInt(elapsedTimeFromLastCollection / interval)
 
-    console.log('el. time: ' + elapsedTime)
-    console.log('interval: ' + interval)
-    console.log(ticks * count)
-    return ticks * count
+    return itemCount * multiplier
   }
 
   collectProducedItems = (building) => {
@@ -245,6 +294,7 @@ export default class Main extends Component {
       building.level, 
       building.maxLevel, 
       building.name, 
+      building.buildDate,
       building.description, 
       building.imagePath, 
       building.goldsForUpdate, 
@@ -277,40 +327,13 @@ export default class Main extends Component {
     }))
   }
 
-  startProductionInterval() {
-    const today = new Date()
-    let minutes = today.getMinutes()
-    let seconds = today.getSeconds()
-
-    const startTimeInMinutes = 10 - ( minutes % 10)
-    const startTimeinMilisecond = (startTimeInMinutes * 60000) - (seconds * 1000)
-
-    this.startTimeout = setTimeout(() => {
-      this.updateProducedItemsOfBuildings()
-
-      this.productionInterval = setInterval(() => {
-        this.updateProducedItemsOfBuildings()
-      }, 600000)
-    }, startTimeinMilisecond)
-  }
-
-  clearProductionIntervals() {
-    if (this.startTimeout != null) {
-      clearTimeout(this.startTimeout)
-    }
-
-    if (this.productionInterval != null) {
-      clearInterval(this.productionInterval)
-    }
-  }
-
   componentDidMount() {
     this.fetchInitFile()
-    this.startProductionInterval()
   }
 
   componentWillUnmount() {
-    this.clearProductionIntervals()
+    this.clearUpdateItemStartTimers()
+    this.clearUpdateItemIntervals()
   }
 
   render() {

@@ -6,17 +6,13 @@ export class BuildingArea {
 }
 
 export class BuiltBuilding {
-    #produceGoldCount = 0
-    #produceIronsCount = 0
-    #produceStonesCount = 0
-    #produceWoodsCount = 0
-    
     constructor (
         coordX, 
         coordY, 
         level, 
         maxLevel, 
         name, 
+        buildDate,
         description, 
         imagePath, 
         goldsForUpdate, 
@@ -39,6 +35,7 @@ export class BuiltBuilding {
         this.level = level
         this.maxLevel = maxLevel
         this.name = name
+        this.buildDate = buildDate
         this.description = description
         this.imagePath = imagePath
         this.goldsForUpdate = goldsForUpdate

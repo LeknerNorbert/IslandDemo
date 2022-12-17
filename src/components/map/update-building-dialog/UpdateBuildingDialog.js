@@ -1,5 +1,7 @@
 import { Component, useState } from 'react';
-import { Modal, Button, Container, Col, Row, Table } from 'react-bootstrap';
+import { Modal, Button, Container, Col, Row, Table, ModalBody } from 'react-bootstrap';
+
+import "./UpdateBuildingDialog.css"
 
 export default class UpdateBuildingDialog extends Component {
     constructor(props) {

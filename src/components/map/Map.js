@@ -4,6 +4,8 @@ import Tile from './tile/Tile.js'
 import React from "react";
 import Building from "./building/Building.js";
 import { Spinner } from 'react-bootstrap';
+import { AnimateKeyframes }  from 'react-simple-animate';
+
 
 import './Map.css'
 
@@ -186,6 +188,19 @@ export default class Map extends Component {
     }
 
     render() {
+
+        const coords = []
+
+        for(let i = 0; i < 20; i++) {
+            const latitude = []
+
+            for (let j = 0; j < 30; j++) {
+                latitude.push({ x: j, y: i })
+            }
+
+            coords.push(latitude)
+        }
+
         return !this.props.isInitReady ? (
             <div className="vh-100 vw-100 d-flex justify-content-center align-items-center">
                 <Spinner animation="grow" />
@@ -219,7 +234,23 @@ export default class Map extends Component {
                         top: this.state.islandY,
                         left: this.state.islandX,
                     }}>
-                    
+
+                    {
+                        coords.map(coord => (
+                            coord.map(latitude => (
+                                <Tile 
+                                    key={`${latitude.x}:${latitude.y}`}
+                                    width={this.state.tileSize}
+                                    height={this.state.tileSize}
+                                    top={(latitude.y * this.state.tileSize)}
+                                    left={(latitude.x * this.state.tileSize)}
+                                >
+                                    { `${latitude.x}:${latitude.y}` }
+                                </Tile>
+                            ))
+                        ))
+                    }
+
                     {
                         this.props.availableBuildingAreas.map((area, index) => (
                             <Tile 
@@ -256,7 +287,6 @@ export default class Map extends Component {
                             </Tile>
                         ))
                     }
-        
                 </div>
             </div>
         )

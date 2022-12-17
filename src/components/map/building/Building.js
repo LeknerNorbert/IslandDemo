@@ -9,10 +9,61 @@ export default class Building extends Component{
         super(props)
 
         this.ref = React.createRef()
+
+        this.state = {
+            remainingTime: null
+        }
+
+        let interval;
     }
 
     handleClick() {
         this.props.collectProducedItems(this.props.building)
+    }
+
+    checkAlreadyBuilded() {
+        const today = new Date()
+
+        return this.props.building.buildDate > today ? false : true
+    }
+
+    startReaminingTimeTimer() {
+        this.handleTimeChange()
+
+        this.interval = setInterval(() => this.handleTimeChange(), 1000)
+    }
+
+    handleTimeChange() {
+        const today = new Date()
+        const time = this.props.building.buildDate - today
+
+        if (time > 0) {
+            this.setState(state => ({
+                ...state,
+                remainingTime: new Date(time)
+            }))
+        } else {
+            this.setState(state => ({
+                ...state,
+                remainingTime: null
+            }))
+
+            this.clearRemainingTime()
+        }
+    }
+
+    componentDidMount() {
+        if (!this.checkAlreadyBuilded()) {
+            this.startReaminingTimeTimer()
+        }
+    }
+    
+    clearRemainingTime() {
+        clearInterval(this.interval)
+    }
+
+    componentWillUnmount() {
+        this.clearRemainingTime()
     }
 
     render() {
@@ -22,7 +73,15 @@ export default class Building extends Component{
             this.props.building.alreadyProducedStones +
             this.props.building.alreadyProducedWoods > 0 )
 
-        return (
+        return this.state.remainingTime != null ? 
+        (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column">
+                <i className="bi bi-hammer fs-4"></i>
+                <span className="fw-bold">{ this.state.remainingTime.getHours() - 1 }h { this.state.remainingTime.getMinutes() }m { this.state.remainingTime.getSeconds() }s</span>
+            </div>
+        ) :
+        (
+
             <div className="w-100 h-100">
                 <div className="overlay-container" ref={this.ref}></div>
                 <OverlayTrigger
