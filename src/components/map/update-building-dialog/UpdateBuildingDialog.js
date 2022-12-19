@@ -107,7 +107,7 @@ export default class UpdateBuildingDialog extends Component {
                     <Table responsive bordered>
                     <thead>
                         <tr>
-                            <th colSpan="3">Frissitéshez szükséges nyersanyagok</th>
+                            <th colSpan="3">Fejlesztéshez szükséges nyersanyagok</th>
                         </tr>
                         <tr>
                             <th>Nyersanyag</th>
