@@ -19,7 +19,7 @@
             "ironsForUpdate": 100, 
             "stonesForUpdate": 100, 
             "woodsForUpdate": 100, 
-            "productionInterval": 30000,
+            "productionInterval": 3000000,
             "lastCollectTime": "2022-12-17T01:00:00",
             "produceGoldCount": 10,
             "produceIronsCount": 10,
@@ -69,94 +69,35 @@
         "irons": 1000,
         "golds": 1000
     },
-    "npcRoutes": [
-        { 
-            "coordX": 5,
-            "coordY": 8 
-        },
-        { 
-            "coordX": 5,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 6,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 7,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 8,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 9,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 10,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 10,
-            "coordY": 10
-        },
-        { 
-            "coordX": 11,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 12,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 13,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 14,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 15,
-            "coordY": 9 
-        },
-        { 
-            "coordX": 15,
-            "coordY": 8 
-        },
-        { 
-            "coordX": 15,
-            "coordY": 7 
-        },
-        { 
-            "coordX": 15,
-            "coordY": 6 
-        },
-        { 
-            "coordX": 15,
-            "coordY": 10 
-        },
-        { 
-            "coordX": 16,
-            "coordY": 10 
-        },
-        { 
-            "coordX": 17,
-            "coordY": 10 
-        },
-        { 
-            "coordX": 18,
-            "coordY": 10 
-        },
-        { 
-            "coordX": 19,
-            "coordY": 10 
-        },
-        { 
-            "coordX": 20,
-            "coordY": 10 
-        }
+    "routeTiles": [
+        { "coordX": 6, "coordY": 8 },
+        { "coordX": 7, "coordY": 8 },
+        { "coordX": 8, "coordY": 8 },
+        { "coordX": 9, "coordY": 8 },
+        { "coordX": 10, "coordY": 6 },
+        { "coordX": 10, "coordY": 7 },
+        { "coordX": 10, "coordY": 8 },
+        { "coordX": 10, "coordY": 9 },
+        { "coordX": 11, "coordY": 6 },
+        { "coordX": 12, "coordY": 6 },
+        { "coordX": 13, "coordY": 6 },
+        { "coordX": 14, "coordY": 6 },
+        { "coordX": 11, "coordY": 8 },
+        { "coordX": 12, "coordY": 8 },
+        { "coordX": 13, "coordY": 8 },
+        { "coordX": 14, "coordY": 8 },
+        { "coordX": 15, "coordY": 8 },
+        { "coordX": 16, "coordY": 8 },
+        { "coordX": 16, "coordY": 9 },
+        { "coordX": 16, "coordY": 10 },
+        { "coordX": 17, "coordY": 10 },
+        { "coordX": 18, "coordY": 10 },
+        { "coordX": 19, "coordY": 10 },
+        { "coordX": 8, "coordY": 15 },
+        { "coordX": 9, "coordY": 15 },
+        { "coordX": 10, "coordY": 15 },
+        { "coordX": 10, "coordY": 16 },
+        { "coordX": 10, "coordY": 17 },
+        { "coordX": 10, "coordY": 18 }
     ]
 }

@@ -49,3 +49,12 @@
     background-color: orange;
     position: absolute;
 }
+
+.animations {
+    width: 100%;
+    height: 100%;
+}
+.animations > div {
+    width: 100%;
+    height: 100%;
+}

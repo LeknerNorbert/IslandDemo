@@ -1,9 +1,9 @@
 import { Component } from "react"
-import Map from "../map/Map"
+import IslandManagement from "../island-management/IslandManagement"
 import BuildingNotification from "../building-notification/BuildingNotification.js"
 import PlayerStatistic from "../player-statistic/PlayerStatistic"
 import { BuiltBuilding, UnbuiltBuilding, BuildingArea as BuildingArea } from './Models'
-import UpdateBuildingDialog from "../map/update-building-dialog/UpdateBuildingDialog"
+import UpdateBuildingDialog from "../island-management/update-building-dialog/UpdateBuildingDialog"
 
 export default class Main extends Component {
   constructor() {
@@ -26,7 +26,7 @@ export default class Main extends Component {
         irons: 0,
         golds: 0
       },
-      npcWays: [],
+      routeTiles: [],
       waitToBuild: null,
       selectedBuildingToUpdate: null
     }
@@ -83,7 +83,6 @@ export default class Main extends Component {
       )
     )
 
-
     const unbuiltBuildings = initFile.unbuiltBuildings?.map(b => 
       new UnbuiltBuilding(
         b.name,
@@ -112,7 +111,7 @@ export default class Main extends Component {
         irons: initFile.items.irons,
         golds: initFile.items.golds
       },
-      npcRoutes: initFile.npcRoutes
+      routeTiles: initFile.routeTiles
     }), () => {
       for(let building of this.state.builtBuildings) {
         this.startUpdateItemTimer(building)
@@ -367,7 +366,7 @@ export default class Main extends Component {
           selectWaitToBuild={this.selectWaitToBuild}
           waitToBuild={this.state.waitToBuild}
           />
-        <Map 
+        <IslandManagement 
           isInitReady={this.state.isInitReady}
           buildBuilding={this.buildBuilding}
           availableBuildingAreas={this.state.availableBuildingAreas}
@@ -375,6 +374,7 @@ export default class Main extends Component {
           waitToBuild={this.state.waitToBuild}
           collectProducedItems={this.collectProducedItems}
           selectBuildingToUpdate={this.selectBuildingToUpdate}
+          routeTiles={this.state.routeTiles}
           />
           <UpdateBuildingDialog
             show={this.state.selectedBuildingToUpdate != null}
