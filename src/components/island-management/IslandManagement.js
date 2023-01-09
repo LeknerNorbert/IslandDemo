@@ -7,6 +7,7 @@ import { Spinner } from 'react-bootstrap';
 import { AnimateKeyframes }  from 'react-simple-animate';
 
 import './IslandManagement.css'
+import NPC from "../NPC/NPC.js";
 
 export default class IslandManagement extends Component {    
 
@@ -25,8 +26,10 @@ export default class IslandManagement extends Component {
             islandY: 0,
             isLeftButtonHolded: false,
             zoom: 0,
-            npcAnimation: null
+            npcAnimations: [],
         }
+
+        this.animationTimeout = null
     }
 
     calculateCameraPosition() {
@@ -181,6 +184,15 @@ export default class IslandManagement extends Component {
 
     // Animation
 
+    scheduleNextNPCAnimations() {
+        const nextScheduleTime = Math.floor(Math.random() * 5000) + 5000
+
+        this.animationTimeout = setTimeout(() => {
+            this.startNPCAnimation()
+            this.scheduleNextNPCAnimations()
+        }, nextScheduleTime)
+    }
+
     startNPCAnimation() {
         const routeTilesMap = this.convertRoutesToMap(this.props.routeTiles)
         const startCoordinatesMap = this.searchStartCoordinates(routeTilesMap)
@@ -189,10 +201,32 @@ export default class IslandManagement extends Component {
         const movements = this.convertRouteCoordinatesToMovements(routeCoordinates)
         const npcAnimation = this.createNPCAnimation(startCoordinate, movements)
 
-        this.setState(state => ({
-            ...state,
-            npcAnimation: npcAnimation
-        }))
+        const extendedNPCAnimations = this.state.npcAnimations.slice()
+        extendedNPCAnimations.push(npcAnimation)
+
+        let npcAnimations = this.state.npcAnimations
+        npcAnimations = this.animationGarbageCollect(npcAnimations)
+
+        if (npcAnimations.length < 6) {
+            console.log('OK')
+            this.setState(state => ({
+                ...state,
+                npcAnimations: extendedNPCAnimations
+            }))
+        }
+    }
+
+    animationGarbageCollect(animations) {
+        const runningAnimations = []
+        const now = new Date()
+
+        for(const animation of animations) {
+            if (animation.endTime > now) {
+                runningAnimations.push(animation)
+            }
+        }
+
+        return runningAnimations
     }
 
     convertRoutesToMap(routes) {
@@ -309,6 +343,7 @@ export default class IslandManagement extends Component {
         return npcRouteCoordinates
     }
 
+    // Kiszervervezni külön fileba
     Directions = {
         top: 0,
         right: 1,
@@ -356,68 +391,134 @@ export default class IslandManagement extends Component {
     }
 
     createNPCAnimation (startCoordinate, movements) {
-        const keyFrames = []
+        const keyframes = []
         const islandWidthCoordinatesOnePercent = 0.3
         const islandHeightCoordinatesOnePercent = 0.2
+        const stepTime = 3.5
 
-        let allSteps = movements.reduce((r, a) => r + a.steps, 0)
+        const allSteps = movements.reduce((r, a) => r + a.steps, 0)
         let currentTranslateX = startCoordinate.coordX / islandWidthCoordinatesOnePercent
         let currentTranslateY = startCoordinate.coordY / islandHeightCoordinatesOnePercent
-        let animationKeyFramePercent = 0
+        let animationKeyframePercent = 0
 
-        keyFrames.push({ 0: `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)` })
+        keyframes.push({ 0: `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%);` })
 
         for (const movement of movements) {
 
-            let keyFrame = {}
+            let keyframe = {}
 
-            animationKeyFramePercent += movement.steps / (allSteps / 100)
-            if (animationKeyFramePercent > 100) animationKeyFramePercent = 100
+            animationKeyframePercent += movement.steps / (allSteps / 100)
+            if (animationKeyframePercent > 100) animationKeyframePercent = 100
             
             switch(movement.direction) {
                 case this.Directions.top:
                     currentTranslateY -= movement.steps / islandHeightCoordinatesOnePercent
-                    keyFrame[animationKeyFramePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)`
+                    keyframe[animationKeyframePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%);`
 
-                    keyFrames.push(keyFrame)
+                    keyframes.push(keyframe)
 
                     break;
                 case this.Directions.right:
                     currentTranslateX += movement.steps / islandWidthCoordinatesOnePercent
-                    keyFrame[animationKeyFramePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)`
+                    keyframe[animationKeyframePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%);`
 
-                    keyFrames.push(keyFrame)
+                    keyframes.push(keyframe)
                 
                     break;
                 case this.Directions.bottom:
                     currentTranslateY += movement.steps / islandHeightCoordinatesOnePercent
-                    keyFrame[animationKeyFramePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)`
+                    keyframe[animationKeyframePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%);`
 
-                    keyFrames.push(keyFrame)
+                    keyframes.push(keyframe)
 
                     break;
                 case this.Directions.left:
                     currentTranslateX -= movement.steps / islandWidthCoordinatesOnePercent
-                    keyFrame[animationKeyFramePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)`
+                    keyframe[animationKeyframePercent] = `transform: translateX(${ currentTranslateX }%) translateY(${ currentTranslateY }%)`
 
-                    keyFrames.push(keyFrame)
+                    keyframes.push(keyframe)
 
                     break;  
             }
         }
 
+        // Walking animaton
+        const sprites = {
+            animationFrequency: 8,
+            spritePath: '/assets/sprites/sprite-0001.png',
+        }
+
+        let spriteXPosition = 0
+        const walkingKeyframes = []
+        const walkingAnimationKeyframePercent = 100 / (allSteps * sprites.animationFrequency) 
+        let currentWalkingAnimationKeyframePercent = 0
+
+        for(const movement of movements) {
+            for (let step = 0; step < movement.steps; step++) {
+                for (let keyframes = 0; keyframes < sprites.animationFrequency; keyframes++) {
+                    
+                    const walkingKeyframe = {}
+
+                    switch(movement.direction) {
+                        case this.Directions.top:
+                            walkingKeyframe[currentWalkingAnimationKeyframePercent] = 
+                                `background-image: url(/assets/sprites/sprite-0001.png); background-position: ${100 / 3 * spriteXPosition}% ${100 / 3 * 2}%`
+                            walkingKeyframes.push(walkingKeyframe)
+
+                            break;
+                        case this.Directions.right:
+                            walkingKeyframe[currentWalkingAnimationKeyframePercent] = 
+                                `background-image: url(/assets/sprites/sprite-0001.png); background-position: ${100 / 3 * spriteXPosition}% ${100 / 3}%`
+                            walkingKeyframes.push(walkingKeyframe)
+
+                            break;
+                        case this.Directions.bottom:
+                            walkingKeyframe[currentWalkingAnimationKeyframePercent] = 
+                                `background-image: url(/assets/sprites/sprite-0001.png); background-position: ${100 / 3 * spriteXPosition}% ${0}%`
+                            walkingKeyframes.push(walkingKeyframe)
+
+                            break;
+                        case this.Directions.left:
+                            walkingKeyframe[currentWalkingAnimationKeyframePercent] = 
+                                `background-image: url(/assets/sprites/sprite-0001.png); background-position: ${100 / 3 * spriteXPosition}% ${100}%`
+                            walkingKeyframes.push(walkingKeyframe)
+
+                            break;  
+                    }
+
+                    spriteXPosition < 3 ? spriteXPosition++ : spriteXPosition = 0
+                    
+                    currentWalkingAnimationKeyframePercent += walkingAnimationKeyframePercent
+                    if (currentWalkingAnimationKeyframePercent > 100) currentWalkingAnimationKeyframePercent = 100
+                }
+            }
+        }
+
+        const createTime = Date.now()
+        const duration = allSteps * stepTime
+
         return {
-            duration: allSteps * 1.2,
-            keyFrames: keyFrames
+            duration: duration,
+            keyframes: keyframes,
+            walkingKeyframes: walkingKeyframes,
+            createTime: new Date(),
+            endTime: new Date(createTime + (duration * 1000))
         }
     }
 
     componentDidMount() {
         this.calculateCameraPosition()
+        this.scheduleNextNPCAnimations()
 
         window.addEventListener('resize', () => {
             this.calculateCameraPosition()
         })
+    }
+
+    componentWillUnmount() {
+        if (this.animationTimeout != null) {
+            clearTimeout(this.animationTimeout)
+        }
     }
 
     render() {
@@ -434,11 +535,6 @@ export default class IslandManagement extends Component {
                     onMouseUp={ () => this.handleMouseUp() }
                     onWheel={ e => this.handleWheel(e) }
                 >
-                
-                
-                <button 
-                    className="position-absolute bottom-0 end-0" 
-                    onClick={() => this.startNPCAnimation()}>Start animation</button>
             
                 <div 
                     className="water"
@@ -462,19 +558,24 @@ export default class IslandManagement extends Component {
                     }}>
                         
                     <div className="animations">
+                        
                         {
-                            this.state.npcAnimation != null ? 
-                            <AnimateKeyframes
-                                play
-                                duration={this.state.npcAnimation.duration}
-                                direction="normal"
-                                keyframes={this.state.npcAnimation.keyFrames} 
-                            >
-                                <div style={{width: this.state.tileSize, height: this.state.tileSize, backgroundColor: 'black'}}>
-
-                                </div>
-                            </AnimateKeyframes> :
-                            null
+                            this.state.npcAnimations.map((animation, index) => (
+                                <AnimateKeyframes
+                                    play
+                                    duration={animation.duration}
+                                    direction="normal"
+                                    keyframes={animation.keyframes}
+                                    key={index}
+                                >
+                                    <NPC 
+                                        width={this.state.tileSize} 
+                                        height={this.state.tileSize}
+                                        walkingKeyframes={animation.walkingKeyframes}
+                                        duration={animation.duration}
+                                    />
+                                </AnimateKeyframes>
+                            ))
                         }
                     </div>
 
